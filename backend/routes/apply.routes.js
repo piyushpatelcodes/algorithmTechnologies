@@ -87,10 +87,26 @@ async function highlightRowsWithDate(sheets, spreadsheetId, date) {
   });
 
   const rows = response.data.values || [];
+
+  let previousDates = new Set();
+const colors = [
+  { red: 0.8, green: 1, blue: 0.8 }, // Light green
+  { red: 1, green: 0.8, blue: 0.8 }, // Light red
+  { red: 0.8, green: 0.8, blue: 1 }, // Light blue
+  { red: 0.8, green: 1, blue: 1 },   // Light cyan
+  { red: 1, green: 1, blue: 0.8 },   // Light yellow
+];
+let colorIndex = 0;
   
   // Prepare requests to update cell formatting
   const requests = rows.map((row, index) => {
-    if (row[6] === date) { // Check if the date column matches
+    if (row[6] === date && !previousDates.has(date)) { // Check if the date column matches and it's new
+        // Mark this date as processed
+        previousDates.add(date);
+    
+        // Get the current color to apply
+        const currentColor = colors[colorIndex];
+        colorIndex = (colorIndex + 1) % colors.length;
       return {
         repeatCell: {
           range: {
@@ -103,9 +119,9 @@ async function highlightRowsWithDate(sheets, spreadsheetId, date) {
           cell: {
             userEnteredFormat: {
               backgroundColor: {
-                red: 1,
-                green: 1,
-                blue: 0.5, // Light yellow background
+                red: currentColor.red,
+                green: currentColor.green,
+                blue: currentColor.blue,
               },
             },
           },

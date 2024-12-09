@@ -57,7 +57,7 @@ require("./routes/apply.routes")(app);
 
 
 app.get("/getaccesstoken", async function (req,res){
-  console.log(req.query.code)
+  // console.log(req.query.code)
 
   const params = "?client_id=" + process.env.GITHUB_CLIENT_ID + "&client_secret=" + process.env.GITHUB_CLIENT_SECRET + "&code=" + req.query.code
 
@@ -69,7 +69,7 @@ app.get("/getaccesstoken", async function (req,res){
   }).then((response)=>{
     return response.json();
   }).then((data)=>{
-    console.log(data)
+    // console.log(data)
     res.json(data)
   })
 
@@ -85,7 +85,7 @@ app.get("/getuserdata", async function(req,res){
   }).then((response)=>{
     return response.json();
   }).then((data)=>{
-    console.log("userdata getttttt",data)
+    // console.log("userdata getttttt",data)
     res.json(data)
   })
 })

@@ -5,10 +5,14 @@ import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { Field, Label, Switch } from '@headlessui/react'
 import axios from 'axios'
 import { SiPaloaltonetworks } from "react-icons/si";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
 
 
 export default function Example() {
   const [agreed, setAgreed] = useState(false)
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -30,6 +34,7 @@ export default function Example() {
     )
   }
 
+
   const handleChange = (e) => {
     const { name, value } = e.target
     setFormData((prevData) => ({
@@ -39,12 +44,23 @@ export default function Example() {
   }
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     if (isFormValid()) {
       try {
         // Replace with your Google Sheets API endpoint
-        const response = await axios.post('http://localhost:8080/api/append', formData)
-        console.log('Data submitted:', response.data)
+        const response = await axios.post('http://localhost:8080/api/append', formData);
+        console.log('Data submitted:', response.data);
+
+        // Show success toast notification
+        toast.success('Form submitted successfully!', {
+          position: "bottom-right",
+          autoClose: 10000, // Toast will close after 3 seconds
+        });
+        toast.success('Redirecting You To Home Page...', {
+          position: "bottom-right",
+          autoClose: 10000, // Toast will close after 3 seconds
+        });
+
         // Reset the form after submission
         setFormData({
           firstName: '',
@@ -53,19 +69,28 @@ export default function Example() {
           domain: '',
           resumelink: '',
           message: '',
-        })
-        setAgreed(false)
+        });
+        setAgreed(false);
+
+        setTimeout(() => {
+          navigate('/'); // Redirect to home
+      }, 7000);
       } catch (error) {
-        console.error('Error submitting data:', error)
+        console.error('Error submitting data:', error);
+        // Show error toast notification
+        toast.error('Error submitting form. Please try again.', {
+          position: "bottom-right",
+          autoClose: 10000,
+        });
       }
     } else {
-      console.log('Form is not valid:', formData)
+      console.log('Form is not valid:', formData);
     }
-  }
+};
 
   return (
     <div className="isolate relative bg-white px-6 py-24 sm:py-32 lg:px-8">
-      
+       <ToastContainer className={"z-50"} />
       
       <div className="mx-auto  max-w-2xl text-center">
       <h2 className="flex flex-wrap items-center justify-center gap-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
